@@ -59,6 +59,16 @@ answer = st.radio('Did you get the question right?', ['Yes', 'No'])
 
 if st.button('Submit'):
     correct = 1 if answer == 'Yes' else 0
+
+    # Log the response with the current difficulty before updating
+    st.session_state.responses_log.append({
+        'Name': name,
+        'Question_Count': st.session_state.total_questions + 1,  # Add 1 since it's the next question
+        'Difficulty': st.session_state.current_difficulty,
+        'Correct/Incorrect': 'Correct' if correct else 'Incorrect',
+        'Confidence': st.session_state.confidence
+    })
+
     st.session_state.correct_answers.append(correct)
     st.session_state.total_questions += 1
 
@@ -78,15 +88,6 @@ if st.button('Submit'):
 
         if st.session_state.confidence >= 0.9:
             st.session_state.final_level = levels[st.session_state.current_band]
-
-    # Log the response with updated confidence
-    st.session_state.responses_log.append({
-        'Name': name,
-        'Question_Count': st.session_state.total_questions,
-        'Difficulty': st.session_state.current_difficulty,
-        'Correct/Incorrect': 'Correct' if correct else 'Incorrect',
-        'Confidence': st.session_state.confidence
-    })
 
     st.session_state.show_modal = st.session_state.total_questions in [15, 20]
     st.experimental_rerun()
